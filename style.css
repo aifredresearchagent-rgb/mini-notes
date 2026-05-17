@@ -1,27 +1,25 @@
 :root {
   color-scheme: light dark;
-  --bg: #f4f4f5;
-  --panel: #ffffff;
-  --panel-soft: #ededf0;
-  --text: #18181b;
-  --muted: #71717a;
-  --border: #d4d4d8;
+  --bg: #f3f4f6;
+  --card: #ffffff;
+  --border: #d1d5db;
+  --text: #111827;
+  --muted: #6b7280;
   --accent: #2563eb;
-  --danger: #dc2626;
-  --shadow: 0 18px 45px rgba(15, 23, 42, 0.12);
+  --done: #16a34a;
+  --shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --bg: #09090b;
-    --panel: #18181b;
-    --panel-soft: #27272a;
-    --text: #fafafa;
-    --muted: #a1a1aa;
-    --border: #3f3f46;
+    --bg: #0f1115;
+    --card: #1a1d24;
+    --border: #2b313d;
+    --text: #f3f4f6;
+    --muted: #9ca3af;
     --accent: #60a5fa;
-    --danger: #f87171;
-    --shadow: 0 18px 45px rgba(0, 0, 0, 0.35);
+    --done: #4ade80;
+    --shadow: 0 12px 30px rgba(0, 0, 0, 0.35);
   }
 }
 
@@ -29,13 +27,7 @@
   box-sizing: border-box;
 }
 
-html {
-  min-height: 100%;
-  -webkit-text-size-adjust: 100%;
-}
-
 body {
-  min-height: 100vh;
   margin: 0;
   background: var(--bg);
   color: var(--text);
@@ -53,11 +45,9 @@ button {
 }
 
 .app {
-  width: min(100%, 980px);
-  min-height: 100vh;
+  width: min(100%, 1100px);
   margin: 0 auto;
-  padding: max(16px, env(safe-area-inset-top)) max(16px, env(safe-area-inset-right))
-    max(16px, env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left));
+  padding: max(16px, env(safe-area-inset-top)) 16px max(24px, env(safe-area-inset-bottom));
 }
 
 .topbar {
@@ -65,179 +55,131 @@ button {
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  margin-bottom: 16px;
 }
 
 .eyebrow {
   margin: 0 0 4px;
   color: var(--muted);
-  font-size: 0.78rem;
-  font-weight: 700;
-  letter-spacing: 0.08em;
   text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 0.75rem;
+  font-weight: 700;
 }
 
 h1 {
   margin: 0;
-  font-size: clamp(1.9rem, 8vw, 3rem);
-  line-height: 1;
+  font-size: clamp(2rem, 7vw, 3.2rem);
 }
 
-.button,
-.delete-button {
-  min-height: 44px;
-  border: 0;
-  border-radius: 999px;
-  padding: 0 16px;
-  font-weight: 700;
+.hint {
+  margin: 12px 0 20px;
+  color: var(--muted);
 }
 
 .button {
+  border: 0;
+  border-radius: 999px;
+  min-height: 46px;
+  padding: 0 18px;
   background: var(--accent);
   color: white;
+  font-weight: 700;
 }
 
-.layout {
+.todo-list {
   display: grid;
-  grid-template-columns: 280px 1fr;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
   gap: 16px;
 }
 
-.sidebar,
-.editor {
-  background: var(--panel);
+.todo-card {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-height: 220px;
+  padding: 16px;
   border: 1px solid var(--border);
   border-radius: 24px;
+  background: var(--card);
   box-shadow: var(--shadow);
+  touch-action: none;
 }
 
-.sidebar {
-  min-height: 500px;
-  padding: 10px;
+.todo-card.dragging {
+  opacity: 0.5;
 }
 
-.notes-list {
-  display: grid;
-  gap: 8px;
+.todo-card.done {
+  opacity: 0.7;
 }
 
-.note-card {
-  width: 100%;
-  border: 1px solid transparent;
-  border-radius: 16px;
-  padding: 12px;
-  background: transparent;
-  color: var(--text);
-  text-align: left;
+.todo-card.done .title-input,
+.todo-card.done .details-input {
+  text-decoration: line-through;
 }
 
-.note-card:hover,
-.note-card.active {
-  background: var(--panel-soft);
-  border-color: var(--border);
-}
-
-.note-card-title {
-  display: block;
-  overflow: hidden;
-  font-weight: 800;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.note-card-date {
-  display: block;
-  margin-top: 4px;
-  color: var(--muted);
-  font-size: 0.85rem;
-}
-
-.empty-state {
-  margin: 12px;
-  color: var(--muted);
-  line-height: 1.4;
-}
-
-.editor {
+.card-top {
   display: flex;
-  min-height: 500px;
-  flex-direction: column;
-  overflow: hidden;
-}
-
-.title-input,
-.body-input {
-  width: 100%;
-  border: 0;
-  background: transparent;
-  color: var(--text);
-  outline: 0;
-}
-
-.title-input {
-  padding: 20px 20px 10px;
-  font-size: 1.5rem;
-  font-weight: 800;
-}
-
-.body-input {
-  flex: 1;
-  min-height: 320px;
-  padding: 10px 20px 20px;
-  font-size: 1rem;
-  line-height: 1.6;
-  resize: none;
-}
-
-.editor-actions {
-  display: flex;
-  align-items: center;
   justify-content: space-between;
-  gap: 12px;
-  border-top: 1px solid var(--border);
-  padding: 12px 16px;
+  align-items: center;
 }
 
-.save-status {
-  margin: 0;
-  color: var(--muted);
-  font-size: 0.9rem;
+.done-button,
+.delete-button {
+  width: 42px;
+  height: 42px;
+  border: 0;
+  border-radius: 999px;
+}
+
+.done-button {
+  background: rgba(37, 99, 235, 0.12);
+  border: 2px solid var(--accent);
+}
+
+.todo-card.done .done-button {
+  background: var(--done);
+  border-color: var(--done);
 }
 
 .delete-button {
   background: transparent;
-  color: var(--danger);
+  color: #ef4444;
+  font-size: 1.4rem;
 }
 
-@media (max-width: 720px) {
-  .app {
-    padding-top: max(14px, env(safe-area-inset-top));
-  }
+.title-input,
+.details-input {
+  width: 100%;
+  border: 0;
+  background: transparent;
+  color: var(--text);
+  outline: none;
+}
 
+.title-input {
+  font-size: 1.2rem;
+  font-weight: 700;
+}
+
+.details-input {
+  flex: 1;
+  min-height: 120px;
+  resize: none;
+  line-height: 1.5;
+}
+
+@media (max-width: 640px) {
   .topbar {
-    align-items: flex-start;
+    flex-direction: column;
+    align-items: stretch;
   }
 
-  .layout {
+  .todo-list {
     grid-template-columns: 1fr;
   }
 
-  .sidebar {
-    min-height: auto;
-  }
-
-  .notes-list {
-    display: flex;
-    overflow-x: auto;
-    padding-bottom: 2px;
-    -webkit-overflow-scrolling: touch;
-  }
-
-  .note-card {
-    min-width: 165px;
-  }
-
-  .editor {
-    min-height: calc(100vh - 245px);
+  .todo-card {
+    min-height: 200px;
   }
 }

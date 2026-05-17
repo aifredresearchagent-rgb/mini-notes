@@ -1,141 +1,119 @@
-const STORAGE_KEY = "mini-notes";
+const STORAGE_KEY = "todo-kacheln";
 
-const notesList = document.querySelector("#notes-list");
-const newNoteButton = document.querySelector("#new-note");
-const deleteNoteButton = document.querySelector("#delete-note");
-const titleInput = document.querySelector("#note-title");
-const bodyInput = document.querySelector("#note-body");
-const saveStatus = document.querySelector("#save-status");
+const todoList = document.querySelector("#todo-list");
+const addTodoButton = document.querySelector("#add-todo");
+const template = document.querySelector("#todo-template");
 
-let notes = loadNotes();
-let activeNoteId = notes[0]?.id || null;
+let todos = loadTodos();
+let draggedId = null;
 
-function loadNotes() {
-  const savedNotes = localStorage.getItem(STORAGE_KEY);
-
-  if (!savedNotes) {
-    return [createNote("Willkommen", "Deine Notizen werden automatisch auf diesem Gerät gespeichert.")];
-  }
-
-  return JSON.parse(savedNotes);
-}
-
-function saveNotes() {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(notes));
-  saveStatus.textContent = "Automatisch gespeichert";
-}
-
-function createNote(title = "Neue Notiz", body = "") {
-  const now = new Date().toISOString();
-
+function createTodo() {
   return {
-    id: `${Date.now()}-${Math.random().toString(16).slice(2)}`,
-    title,
-    body,
-    createdAt: now,
-    updatedAt: now,
+    id: crypto.randomUUID(),
+    title: "Neue Aufgabe",
+    details: "",
+    done: false,
   };
 }
 
-function getActiveNote() {
-  return notes.find((note) => note.id === activeNoteId);
-}
+function loadTodos() {
+  const saved = localStorage.getItem(STORAGE_KEY);
 
-function formatDate(dateText) {
-  return new Intl.DateTimeFormat("de-DE", {
-    day: "2-digit",
-    month: "2-digit",
-    year: "numeric",
-  }).format(new Date(dateText));
-}
-
-function renderNotesList() {
-  notesList.innerHTML = "";
-
-  if (notes.length === 0) {
-    notesList.innerHTML = '<p class="empty-state">Noch keine Notizen. Tippe auf „Neue Notiz“.</p>';
-    return;
+  if (!saved) {
+    return [
+      {
+        id: crypto.randomUUID(),
+        title: "Willkommen 👋",
+        details: "Erstelle neue Kacheln und verschiebe sie per Drag & Drop.",
+        done: false,
+      },
+    ];
   }
 
-  notes.forEach((note) => {
-    const noteButton = document.createElement("button");
-    noteButton.className = `note-card${note.id === activeNoteId ? " active" : ""}`;
-    noteButton.type = "button";
-    const title = document.createElement("span");
-    title.className = "note-card-title";
-    title.textContent = note.title || "Ohne Titel";
+  return JSON.parse(saved);
+}
 
-    const date = document.createElement("span");
-    date.className = "note-card-date";
-    date.textContent = formatDate(note.updatedAt);
+function saveTodos() {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(todos));
+}
 
-    noteButton.append(title, date);
-    noteButton.addEventListener("click", () => selectNote(note.id));
-    notesList.appendChild(noteButton);
+function renderTodos() {
+  todoList.innerHTML = "";
+
+  todos.forEach((todo) => {
+    const card = template.content.firstElementChild.cloneNode(true);
+
+    const doneButton = card.querySelector(".done-button");
+    const deleteButton = card.querySelector(".delete-button");
+    const titleInput = card.querySelector(".title-input");
+    const detailsInput = card.querySelector(".details-input");
+
+    card.dataset.id = todo.id;
+    card.classList.toggle("done", todo.done);
+
+    titleInput.value = todo.title;
+    detailsInput.value = todo.details;
+
+    titleInput.addEventListener("input", (event) => {
+      todo.title = event.target.value;
+      saveTodos();
+    });
+
+    detailsInput.addEventListener("input", (event) => {
+      todo.details = event.target.value;
+      saveTodos();
+    });
+
+    doneButton.addEventListener("click", () => {
+      todo.done = !todo.done;
+      saveTodos();
+      renderTodos();
+    });
+
+    deleteButton.addEventListener("click", () => {
+      todos = todos.filter((item) => item.id !== todo.id);
+      saveTodos();
+      renderTodos();
+    });
+
+    card.addEventListener("dragstart", () => {
+      draggedId = todo.id;
+      card.classList.add("dragging");
+    });
+
+    card.addEventListener("dragend", () => {
+      card.classList.remove("dragging");
+      draggedId = null;
+    });
+
+    card.addEventListener("dragover", (event) => {
+      event.preventDefault();
+    });
+
+    card.addEventListener("drop", () => {
+      if (!draggedId || draggedId === todo.id) {
+        return;
+      }
+
+      const fromIndex = todos.findIndex((item) => item.id === draggedId);
+      const toIndex = todos.findIndex((item) => item.id === todo.id);
+
+      const [movedTodo] = todos.splice(fromIndex, 1);
+      todos.splice(toIndex, 0, movedTodo);
+
+      saveTodos();
+      renderTodos();
+    });
+
+    todoList.appendChild(card);
   });
 }
 
-function renderEditor() {
-  const activeNote = getActiveNote();
-  const hasNote = Boolean(activeNote);
+addTodoButton.addEventListener("click", () => {
+  todos.unshift(createTodo());
+  saveTodos();
+  renderTodos();
+});
 
-  titleInput.disabled = !hasNote;
-  bodyInput.disabled = !hasNote;
-  deleteNoteButton.disabled = !hasNote;
-
-  titleInput.value = activeNote?.title || "";
-  bodyInput.value = activeNote?.body || "";
-}
-
-function render() {
-  renderNotesList();
-  renderEditor();
-}
-
-function selectNote(noteId) {
-  activeNoteId = noteId;
-  render();
-}
-
-function addNote() {
-  const note = createNote();
-  notes.unshift(note);
-  activeNoteId = note.id;
-  saveNotes();
-  render();
-  titleInput.focus();
-}
-
-function updateActiveNote() {
-  const activeNote = getActiveNote();
-
-  if (!activeNote) {
-    return;
-  }
-
-  activeNote.title = titleInput.value.trim();
-  activeNote.body = bodyInput.value;
-  activeNote.updatedAt = new Date().toISOString();
-  saveStatus.textContent = "Speichere ...";
-  saveNotes();
-  renderNotesList();
-}
-
-function deleteActiveNote() {
-  if (!activeNoteId) {
-    return;
-  }
-
-  notes = notes.filter((note) => note.id !== activeNoteId);
-  activeNoteId = notes[0]?.id || null;
-  saveNotes();
-  render();
-}
-
-newNoteButton.addEventListener("click", addNote);
-deleteNoteButton.addEventListener("click", deleteActiveNote);
-titleInput.addEventListener("input", updateActiveNote);
-bodyInput.addEventListener("input", updateActiveNote);
-
-saveNotes();
-render();
+saveTodos();
+renderTodos();
