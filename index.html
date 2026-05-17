@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#111111" />
+    <title>Mini Notes</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <main class="app" aria-label="Mini Notes App">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">LocalStorage</p>
+          <h1>Mini Notes</h1>
+        </div>
+        <button id="new-note" class="button" type="button">Neue Notiz</button>
+      </header>
+
+      <section class="layout" aria-label="Notizen">
+        <aside class="sidebar" aria-label="Notizliste">
+          <div id="notes-list" class="notes-list"></div>
+        </aside>
+
+        <section class="editor" aria-label="Notiz bearbeiten">
+          <input
+            id="note-title"
+            class="title-input"
+            type="text"
+            placeholder="Titel"
+            autocomplete="off"
+            aria-label="Notiztitel"
+          />
+
+          <textarea
+            id="note-body"
+            class="body-input"
+            placeholder="Schreibe deine Notiz ..."
+            aria-label="Notizinhalt"
+          ></textarea>
+
+          <div class="editor-actions">
+            <p id="save-status" class="save-status">Automatisch gespeichert</p>
+            <button id="delete-note" class="delete-button" type="button">Löschen</button>
+          </div>
+        </section>
+      </section>
+    </main>
+
+    <script src="script.js"></script>
+  </body>
+</html>
