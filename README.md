@@ -16,11 +16,24 @@ Eine extrem einfache To-do-Web-App ohne Framework, ohne npm und ohne Datenbank.
 - Neue To-do-Kachel erstellen
 - Titel bearbeiten
 - Details hinzufügen
+- Aufwand-Score von 1–100
+- Kritikalität markieren
+- Standard: normal
+- Optional: dringend
 - Kachel löschen
 - Als erledigt markieren
 - Drag & Drop Sortierung
 - Automatische Speicherung
 - Dark Mode über Systemeinstellung
+
+## Score
+
+Der Score stellt den Aufwand einer Aufgabe dar.
+
+- 1–19 → Klein
+- 20–49 → Mittel
+- 50–79 → Hoch
+- 80–100 → Extrem
 
 ## Dateien
 
@@ -28,22 +41,6 @@ Eine extrem einfache To-do-Web-App ohne Framework, ohne npm und ohne Datenbank.
 - `style.css` → Layout, Farben und mobiles Design
 - `script.js` → To-do-Logik und `localStorage`
 - `README.md` → Projektbeschreibung
-
-## Starten
-
-Einfach `index.html` im Browser öffnen.
-
-Oder lokal mit einem kleinen Server:
-
-```bash
-python3 -m http.server 8000
-```
-
-Dann öffnen:
-
-```text
-http://localhost:8000
-```
 
 ## GitHub Pages
 
