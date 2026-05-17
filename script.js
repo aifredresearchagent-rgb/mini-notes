@@ -12,6 +12,8 @@ function createTodo() {
     id: crypto.randomUUID(),
     title: "Neue Aufgabe",
     details: "",
+    score: 10,
+    urgent: false,
     done: false,
   };
 }
@@ -25,6 +27,8 @@ function loadTodos() {
         id: crypto.randomUUID(),
         title: "Willkommen 👋",
         details: "Erstelle neue Kacheln und verschiebe sie per Drag & Drop.",
+        score: 15,
+        urgent: false,
         done: false,
       },
     ];
@@ -37,6 +41,22 @@ function saveTodos() {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(todos));
 }
 
+function getScoreLabel(score) {
+  if (score >= 80) {
+    return "Extrem";
+  }
+
+  if (score >= 50) {
+    return "Hoch";
+  }
+
+  if (score >= 20) {
+    return "Mittel";
+  }
+
+  return "Klein";
+}
+
 function renderTodos() {
   todoList.innerHTML = "";
 
@@ -47,12 +67,20 @@ function renderTodos() {
     const deleteButton = card.querySelector(".delete-button");
     const titleInput = card.querySelector(".title-input");
     const detailsInput = card.querySelector(".details-input");
+    const scoreInput = card.querySelector(".score-input");
+    const scoreBadge = card.querySelector(".score-badge");
+    const urgentInput = card.querySelector(".urgent-input");
 
     card.dataset.id = todo.id;
+
     card.classList.toggle("done", todo.done);
+    card.classList.toggle("urgent", todo.urgent);
 
     titleInput.value = todo.title;
     detailsInput.value = todo.details;
+    scoreInput.value = todo.score;
+    urgentInput.checked = todo.urgent;
+    scoreBadge.textContent = getScoreLabel(todo.score);
 
     titleInput.addEventListener("input", (event) => {
       todo.title = event.target.value;
@@ -62,6 +90,28 @@ function renderTodos() {
     detailsInput.addEventListener("input", (event) => {
       todo.details = event.target.value;
       saveTodos();
+    });
+
+    scoreInput.addEventListener("input", (event) => {
+      let value = Number(event.target.value);
+
+      if (value < 1) {
+        value = 1;
+      }
+
+      if (value > 100) {
+        value = 100;
+      }
+
+      todo.score = value;
+      scoreBadge.textContent = getScoreLabel(value);
+      saveTodos();
+    });
+
+    urgentInput.addEventListener("change", (event) => {
+      todo.urgent = event.target.checked;
+      saveTodos();
+      renderTodos();
     });
 
     doneButton.addEventListener("click", () => {
