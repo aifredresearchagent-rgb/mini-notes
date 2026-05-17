@@ -31,6 +31,19 @@
 
         <input class="title-input" type="text" placeholder="Titel" aria-label="Todo Titel" />
         <textarea class="details-input" placeholder="Details hinzufügen ..." aria-label="Todo Details"></textarea>
+
+        <div class="score-row">
+          <label>
+            Score
+            <input class="score-input" type="number" min="1" max="100" inputmode="numeric" aria-label="Aufwand Score von 1 bis 100" />
+          </label>
+          <span class="score-badge"></span>
+        </div>
+
+        <label class="urgent-row">
+          <input class="urgent-input" type="checkbox" />
+          Dringend
+        </label>
       </article>
     </template>
 
