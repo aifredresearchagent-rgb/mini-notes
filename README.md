@@ -1,39 +1,54 @@
-# Mini Notes
+# Todo Kacheln
 
-Eine extrem einfache, mobile Notizen-Web-App ohne Framework und ohne Datenbank.
+Eine extrem einfache To-do-Web-App ohne Framework, ohne npm und ohne Datenbank.
+
+## Ziel
+
+- Nur HTML, CSS und JavaScript
+- Speicherung mit `localStorage`
+- Mobile-first für iPhone und iPad
+- GitHub Pages kompatibel
+- Keine externen Libraries
+- Kein Build-System
 
 ## Funktionen
 
-- Notizen erstellen
-- Notizen bearbeiten
-- Notizen löschen
-- Automatische Speicherung im Browser mit `localStorage`
-- Dark Mode über die Systemeinstellung
-- Optimiert für iPhone und iPad
-- Nur HTML, CSS und JavaScript
+- Neue To-do-Kachel erstellen
+- Titel bearbeiten
+- Details hinzufügen
+- Kachel löschen
+- Als erledigt markieren
+- Drag & Drop Sortierung
+- Automatische Speicherung
+- Dark Mode über Systemeinstellung
 
 ## Dateien
 
-- `index.html` – Grundaufbau der App
-- `style.css` – Aussehen, Layout und Dark Mode
-- `script.js` – Notizen-Logik und `localStorage`
+- `index.html` → Struktur der App
+- `style.css` → Layout, Farben und mobiles Design
+- `script.js` → To-do-Logik und `localStorage`
+- `README.md` → Projektbeschreibung
 
 ## Starten
 
-Öffne `index.html` direkt im Browser.
+Einfach `index.html` im Browser öffnen.
 
-Alternativ kannst du im Projektordner einen kleinen lokalen Server starten:
+Oder lokal mit einem kleinen Server:
 
 ```bash
 python3 -m http.server 8000
 ```
 
-Danach öffnest du:
+Dann öffnen:
 
 ```text
 http://localhost:8000
 ```
 
-## Hinweise
+## GitHub Pages
 
-Die Notizen werden nur auf dem aktuellen Gerät und im aktuellen Browser gespeichert. Wenn du Browserdaten löschst, werden auch die Notizen gelöscht.
+Die App funktioniert direkt mit GitHub Pages, da nur statische Dateien verwendet werden.
+
+## Speicherung
+
+Alle Daten bleiben lokal im Browser auf deinem Gerät gespeichert.
